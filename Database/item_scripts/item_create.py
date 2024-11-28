@@ -35,4 +35,4 @@ def create_item_table(collection_id, collection_name):
         cursor.close()
         connection.close()
 
-
+def
