@@ -30,4 +30,4 @@ def view_collections():
         cursor.close()
         conn.close()
 
-view_collections()
+view_collections()a
