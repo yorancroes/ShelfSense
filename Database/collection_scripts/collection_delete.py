@@ -1,6 +1,10 @@
 from Database.database_scripts.connect import connect_db
 
 def delete_collection(collection_id):
+    """
+    :param collection_id: The ID of the collection to be deleted from the database.
+    :return: None
+    """
     connection = connect_db()
     cursor = connection.cursor()
 
@@ -16,5 +20,3 @@ def delete_collection(collection_id):
     finally:
         cursor.close()
         connection.close()
-
-delete_collection(1)

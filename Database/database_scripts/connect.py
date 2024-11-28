@@ -1,5 +1,6 @@
 import psycopg2
 
+# use this to setup a connection to the database.
 def connect_db():
     try:
         connection = psycopg2.connect(
