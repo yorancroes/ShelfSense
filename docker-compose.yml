@@ -17,7 +17,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
     depends_on:
       - db
-    network_mode: "host"  # For GUI display access on the host system
+    # Remove the "network_mode: host" line if it's not strictly necessary for GUI or device access
 
   db:
     image: postgres:15
@@ -26,7 +26,7 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: collectors_db
     ports:
-      - "5433:5432"
+      - "5433:5432"  # Expose port 5432 to 5433
     volumes:
       - db_data:/var/lib/postgresql/data
 
