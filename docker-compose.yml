@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    volumes:
+      - ./app:/app
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    depends_on:
+      - db
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - DB_HOST=db  # App will use "db" as the hostname
+    ports:
+      - "8080:8080"  # Assuming your app listens on port 8080, change as needed
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: dummy
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: collectors_db
+    ports:
+      - "5433:5432"  # Expose db on 5433 for external access
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:  # Define the volume for persistent data
