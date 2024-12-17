@@ -7,7 +7,7 @@ WORKDIR /shelfsense
 # Copy application code
 COPY . /shelfsense
 
-# Install system dependencies for Qt (Wayland, X11) and general libraries
+# Install system dependencies for Qt (Wayland, X11) for Linux
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libegl1 \
     libgl1-mesa-dev \
@@ -36,12 +36,16 @@ RUN pip install --no-cache-dir -r app/requirements.txt
 
 # Set environment variables for platform detection
 # Default to X11 (Linux), macOS and Windows should not need extra settings
-RUN if [ -n "$WAYLAND_DISPLAY" ]; then \
-      export QT_QPA_PLATFORM=wayland; \
-    elif [ -n "$DISPLAY" ]; then \
-      export QT_QPA_PLATFORM=xcb; \
-    else \
+RUN if [ "$(uname)" = "Linux" ]; then \
+      if [ -n "$WAYLAND_DISPLAY" ]; then \
+        export QT_QPA_PLATFORM=wayland; \
+      elif [ -n "$DISPLAY" ]; then \
+        export QT_QPA_PLATFORM=xcb; \
+      fi; \
+    elif [ "$(uname)" = "Darwin" ]; then \
       export QT_QPA_PLATFORM=cocoa; \
+    else \
+      export QT_QPA_PLATFORM=windows; \
     fi
 
 # Set environment variable for XDG runtime dir (required by Wayland)
