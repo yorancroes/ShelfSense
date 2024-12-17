@@ -12,6 +12,7 @@ services:
       - DB_USER=dummy
       - DB_PASSWORD=123456
       - DISPLAY=${DISPLAY}
+      - PYTHONPATH=/shelfsense
     volumes:
       - ./app:/app
       - /tmp/.X11-unix:/tmp/.X11-unix
