@@ -1,5 +1,4 @@
 import psycopg2
-from tkinter import messagebox, Tk
 
 # Function to set up a connection to the database
 def connect_db():
@@ -12,5 +11,7 @@ def connect_db():
             port="5432"
         )
         return connection
+
     except Exception as e:
+        print(f"error {e}")
         return None
