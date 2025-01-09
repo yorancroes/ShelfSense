@@ -2,7 +2,7 @@ import bcrypt
 from Database.database_scripts.connect import connect_db
 
 
-# TODO: make it interact with the database
+
 class User:
     def __init__(self, username, password):
         self.username = username
