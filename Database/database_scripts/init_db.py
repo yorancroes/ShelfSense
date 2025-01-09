@@ -3,13 +3,11 @@ from Database.database_scripts.connect import connect_db
 
 def init_db():
     query1 = """
-    CREATE TABLE IF NOT EXISTS Master_User (
+    CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
-        email VARCHAR(100),
-        password VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        is_active BOOLEAN NOT NULL DEFAULT FALSE
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """
 
@@ -17,11 +15,9 @@ def init_db():
     cursor = None
 
     try:
-        # Connect to the database
         conn = connect_db()
         cursor = conn.cursor()
 
-        # Execute the table creation query
         cursor.execute(query1)
         conn.commit()
 
@@ -31,8 +27,8 @@ def init_db():
         print("Error Initializing the database:", e)
 
     finally:
-        # Close the cursor and connection if they exist
         if cursor is not None:
             cursor.close()
+
         if conn is not None:
             conn.close()

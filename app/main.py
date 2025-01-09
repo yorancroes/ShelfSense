@@ -6,7 +6,7 @@ from Database.database_scripts.init_db import init_db
 import os 
 def main():
 
-    init_db()
+    # init_db()
     app = QApplication(sys.argv)
     main_window = MainWindow()
     #main_window.showMaximized();
