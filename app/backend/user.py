@@ -20,7 +20,7 @@ class User:
             conn = connect_db()
             cursor = conn.cursor()
 
-            cursor.execute("SELECT password FROM users WHERE username = ?", (self.username,))
+            cursor.execute("SELECT password FROM users WHERE username = %s", (self.username,))
             stored_hashed_password = cursor.fetchone()
 
             if stored_hashed_password == self.hashed_password:
@@ -46,9 +46,10 @@ class User:
             conn = connect_db()
             cursor = conn.cursor()
 
-            cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)",
+            cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)",
                            (self.username, self.hashed_password))
             conn.commit()
+            print("User inserted successfully")
 
         except Exception as e:
             print("error inserting user into the database", e)

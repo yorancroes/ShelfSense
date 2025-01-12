@@ -36,9 +36,9 @@ class LoginWindow(QMainWindow):
         username = self.lineEdit.text()
         password = self.lineEdit_2.text()
         gebruiker = User(username, password)
-        gebruiker.test_user()
+        gebruiker.insert_user()
 
-        if gebruiker.verify_password(password):
+        if gebruiker.verify_password():
             print(password)
 
 

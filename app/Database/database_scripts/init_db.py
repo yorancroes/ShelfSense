@@ -1,5 +1,5 @@
-import psycopg2
 from Database.database_scripts.connect import connect_db
+
 
 def init_db():
     query1 = """

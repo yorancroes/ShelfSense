@@ -1,71 +1,30 @@
 version: '3.8'
 
-x-common-app-config: &common-app-config
-  build:
-    context: .
-    dockerfile: Dockerfile.app
-  environment: &common-env
-    DB_HOST: db
-    DB_PORT: 5432
-    DB_NAME: collectors_db
-    DB_USER: dummy
-    DB_PASSWORD: 123456
-    PYTHONPATH: /shelfsense
-  volumes:
-    - ./app:/app
-  depends_on:
-    - db
-
 services:
-  # Linux service configuration
-  app-linux:
-    <<: *common-app-config
-    profiles: ["linux"]
+  app:
+    build: .
+    container_name: shelfsense_app
     environment:
-      <<: *common-env
-      DISPLAY: ${DISPLAY}
-      QT_PLATFORM: xcb
-      QT_QPA_PLATFORM: xcb
+      - DISPLAY=host.docker.internal:0
     volumes:
-      - ./app:/app
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    command: python3 app/main.py
 
-  # Windows service configuration
-  app-windows:
-    <<: *common-app-config
-    profiles: ["windows"]
-    environment:
-      <<: *common-env
-      QT_PLATFORM: windows
-      QT_QPA_PLATFORM: windows
-    volumes:
-      - ./app:/app
-
-  # macOS service configuration
-  app-macos:
-    <<: *common-app-config
-    profiles: ["macos"]
-    environment:
-      <<: *common-env
-      DISPLAY: host.docker.internal:0
-      QT_PLATFORM: cocoa
-      QT_QPA_PLATFORM: cocoa
-    volumes:
-      - ./app:/app
-      - /tmp/.X11-unix:/tmp/.X11-unix
-
-  # Database configuration (common across platforms)
   db:
-    image: postgres:15
+    image: postgres:13
+    container_name: postgres_db
     environment:
       POSTGRES_USER: dummy
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: collectors_db
-    ports:
-      - "5433:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 volumes:
-  db_data:
+  postgres_data:
