@@ -33,6 +33,7 @@ RUN apt-get update && \
 ENV QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins
 ENV QT_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins
 ENV DISPLAY=host.docker.internal:0
+ENV PYTHONUNBUFFERED=1
 
 # Copy the requirements file into the container
 COPY app/requirements.txt .

@@ -38,8 +38,10 @@ class LoginWindow(QMainWindow):
         gebruiker = User(username, password)
         gebruiker.insert_user()
 
-        if gebruiker.verify_password():
-            print(password)
-
+        if gebruiker.verify_password(password):
+            print("password is correct!")
+            #TODO: MAKE THE HOME SCREEN!
+        else:
+            print("password is incorrect!")
 
 
