@@ -46,15 +46,15 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">#loginButton, #registerButton{
+     <string notr="true">#lpButton, #bookButton, #gameButton{
 	background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0, stop:0 rgba(34,35,46,255), stop:1 rgba(85, 98, 112, 255));
 }
 
-#loginButton:hover, #registerButton:hover{
+#lpButton:hover, #bookButton:hover, #gameButton:hover{
 	background-color: qlineargradient(spread:pad, x1:0, y1:0.5, x2:1, y2:0, stop:0 rgba(40, 67, 98, 255), stop:1 rgba(105, 118, 132, 255));
 }
 
-#loginButton:pressed, #registerButton:pressed{
+#lpButton:pressed, #bookButton:pressed, #gameButton:pressed{
 	padding-top: 5px;
 	background-color: rgba(105, 118, 132, 255);
 }</string>
@@ -143,11 +143,11 @@
        <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QPushButton" name="loginButton">
+     <widget class="QPushButton" name="lpButton">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>320</y>
+        <y>400</y>
         <width>241</width>
         <height>41</height>
        </rect>
@@ -213,33 +213,7 @@ padding-bottom: 7px;</string>
        <string>X</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="loginButton_4">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>390</y>
-        <width>241</width>
-        <height>41</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Verdana</family>
-        <pointsize>14</pointsize>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgba(0,0,0,0);
-border: none;
-border-bottom: 2px solid rgba(255,255,255,100);
-padding-bottom: 7px;</string>
-      </property>
-      <property name="text">
-       <string>BOOKS</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="loginButton_5">
+     <widget class="QPushButton" name="bookButton">
       <property name="geometry">
        <rect>
         <x>20</x>
@@ -262,7 +236,59 @@ border-bottom: 2px solid rgba(255,255,255,100);
 padding-bottom: 7px;</string>
       </property>
       <property name="text">
+       <string>BOOKS</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="gameButton">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>550</y>
+        <width>241</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Verdana</family>
+        <pointsize>14</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgba(0,0,0,0);
+border: none;
+border-bottom: 2px solid rgba(255,255,255,100);
+padding-bottom: 7px;</string>
+      </property>
+      <property name="text">
        <string>GAMES</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="search">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>310</y>
+        <width>201</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Search...</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="submitButton">
+      <property name="geometry">
+       <rect>
+        <x>220</x>
+        <y>310</y>
+        <width>41</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>look</string>
       </property>
      </widget>
     </widget>
@@ -282,7 +308,7 @@ padding-bottom: 7px;</string>
 	border-radius: 10px;
 }</string>
     </property>
-    <widget class="QPushButton" name="terugButton_2">
+    <widget class="QPushButton" name="addButton">
      <property name="geometry">
       <rect>
        <x>470</x>
@@ -298,7 +324,7 @@ padding-bottom: 7px;</string>
       <string>Toevoegen</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_5">
+    <widget class="QLabel" name="latest_additions">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -320,7 +346,7 @@ padding-bottom: 7px;</string>
       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_6">
+    <widget class="QLabel" name="account">
      <property name="geometry">
       <rect>
        <x>250</x>
@@ -359,7 +385,7 @@ padding-bottom: 7px;</string>
       <enum>Qt::Orientation::Vertical</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="terugButton_3">
+    <widget class="QPushButton" name="deleteButton">
      <property name="geometry">
       <rect>
        <x>470</x>
@@ -375,13 +401,13 @@ padding-bottom: 7px;</string>
       <string>Verwijder</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_9">
+    <widget class="QLabel" name="coverLabel">
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>210</y>
+       <y>200</y>
        <width>151</width>
-       <height>111</height>
+       <height>121</height>
       </rect>
      </property>
      <property name="text">
@@ -394,7 +420,7 @@ padding-bottom: 7px;</string>
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="label_10">
+    <widget class="QLabel" name="titleLabel">
      <property name="geometry">
       <rect>
        <x>30</x>
