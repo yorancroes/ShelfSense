@@ -66,7 +66,7 @@ class LoginWindow(QMainWindow):
 
 
         if gebruiker.verify_password(password):
-            self.win = MenuWindow()
+            self.win = MenuWindow(gebruiker)
             self.win.show()
             self.close()
 
@@ -104,9 +104,24 @@ class RegisterWindow(QMainWindow):
         self.showMinimized()
 
 class MenuWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, gebruiker):
         super(MenuWindow, self).__init__()
         uic.loadUi(os.path.join(BASE_DIR, "UI/menu.ui"), self)
+        self.gebruiker = gebruiker
+        self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.label_8.setText(gebruiker.get_username())
+        #TODO: label_7 moet totale aantal items weergeven!!!
+        self.addButton.clicked.connect(self.add)
+
+    def add(self):
+        self.win = AddWindow()
+        self.win.show()
+
+class AddWindow(QMainWindow):
+    def __init__(self):
+        super(AddWindow, self).__init__()
+        uic.loadUi(os.path.join(BASE_DIR, "UI/toevoegen.ui"), self)
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
 
