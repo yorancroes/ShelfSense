@@ -11,6 +11,9 @@ class User:
         salt = bcrypt.gensalt()
         return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
+    def get_username(self):
+        return self.username
+
     def verify_password(self, password):
         conn = None
         cursor = None
