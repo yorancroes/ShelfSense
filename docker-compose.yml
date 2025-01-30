@@ -1,19 +1,6 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    container_name: shelfsense_app
-    environment:
-      - DISPLAY=host.docker.internal:0
-    volumes:
-      - .:/app
-    ports:
-      - "5000:5000"
-    depends_on:
-      - db
-    command: python3 app/main.py
-
   db:
     image: postgres:13
     container_name: postgres_db
@@ -24,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
 volumes:
   postgres_data:

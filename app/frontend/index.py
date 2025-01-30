@@ -46,10 +46,7 @@ class LoginWindow(QMainWindow):
         self.closeButton.clicked.connect(self.closing)
         self.miniButton.clicked.connect(self.mini)
         self.loginButton.clicked.connect(self.login)
-        username = self.lineEdit.text()
-        password = self.lineEdit_2.text()
-        gebruiker = User(username, password)
-        gebruiker.insert_user()
+
 
     def clicked(self):
         self.win = RegisterWindow()

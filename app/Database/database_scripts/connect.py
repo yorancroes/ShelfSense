@@ -7,8 +7,8 @@ def connect_db():
             dbname="collectors_db",
             user="dummy",
             password="123456",
-            host="db",
-            port="5432"
+            host="localhost",
+            port="5433"
         )
         return connection
 
