@@ -8,6 +8,8 @@ from backend.user import User
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
