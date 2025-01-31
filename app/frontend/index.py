@@ -5,12 +5,13 @@ from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 import os
 from backend.user import User
+from app.backend.helpers import WindowHelpers
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, WindowHelpers):
     def __init__(self):
         super(MainWindow, self).__init__()
         uic.loadUi(os.path.join(BASE_DIR, "UI/main.ui"), self)
@@ -18,8 +19,8 @@ class MainWindow(QMainWindow):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.loginButton.clicked.connect(self.clicked)
         self.registerButton.clicked.connect(self.clickedRegi)
-        self.closeButton.clicked.connect(self.closing)
-        self.miniButton.clicked.connect(self.mini)
+        self.closeButton.clicked.connect(super().closing)
+        self.miniButton.clicked.connect(super().mini)
 
     def clicked(self):
         self.win = LoginWindow()
@@ -32,21 +33,15 @@ class MainWindow(QMainWindow):
         self.win.show()
         self.close()
 
-    def closing(self):
-        self.close()
-
-    def mini(self):
-        self.showMinimized()
-
-class LoginWindow(QMainWindow):
+class LoginWindow(QMainWindow, WindowHelpers):
     def __init__(self):
         super(LoginWindow, self).__init__()
         uic.loadUi(os.path.join(BASE_DIR, "UI/login.ui"), self)
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.terugButton.clicked.connect(self.clicked)
-        self.closeButton.clicked.connect(self.closing)
-        self.miniButton.clicked.connect(self.mini)
+        self.closeButton.clicked.connect(super().closing)
+        self.miniButton.clicked.connect(super().mini)
         self.loginButton.clicked.connect(self.login)
 
 
@@ -54,12 +49,6 @@ class LoginWindow(QMainWindow):
         self.win = RegisterWindow()
         self.win.show()
         self.close()
-
-    def closing(self):
-        self.close()
-
-    def mini(self):
-        self.showMinimized()
 
     def login(self):
         username = self.lineEdit.text()
@@ -73,7 +62,7 @@ class LoginWindow(QMainWindow):
             self.close()
 
 
-class RegisterWindow(QMainWindow):
+class RegisterWindow(QMainWindow, WindowHelpers):
     def __init__(self):
         super(RegisterWindow, self).__init__()
         uic.loadUi(os.path.join(BASE_DIR, "UI/register.ui"), self)
@@ -81,8 +70,8 @@ class RegisterWindow(QMainWindow):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.loginButton.clicked.connect(self.clicked)
         self.terugButton.clicked.connect(self.login)
-        self.closeButton.clicked.connect(self.closing)
-        self.miniButton.clicked.connect(self.mini)
+        self.closeButton.clicked.connect(super().closing)
+        self.miniButton.clicked.connect(super().mini)
 
     def clicked(self):
         username = self.lineEdit.text()
@@ -99,19 +88,15 @@ class RegisterWindow(QMainWindow):
         self.win.show()
         self.close()
 
-    def closing(self):
-        self.close()
-
-    def mini(self):
-        self.showMinimized()
-
-class MenuWindow(QMainWindow):
+class MenuWindow(QMainWindow, WindowHelpers):
     def __init__(self, gebruiker):
         super(MenuWindow, self).__init__()
         uic.loadUi(os.path.join(BASE_DIR, "UI/menu.ui"), self)
         self.gebruiker = gebruiker
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.closeButton.clicked.connect(super().closing)
+        self.miniButton.clicked.connect(super().mini)
         self.label_8.setText(gebruiker.get_username())
         #TODO: label_7 moet totale aantal items weergeven!!!
         self.addButton.clicked.connect(self.add)
@@ -126,6 +111,10 @@ class AddWindow(QMainWindow):
         uic.loadUi(os.path.join(BASE_DIR, "UI/toevoegen.ui"), self)
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.deleteButton.clicked.connect(self.delete)
+
+    def delete(self):
+        self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
