@@ -117,14 +117,12 @@ class AddWindow(QMainWindow):
     def delete(self):
         self.close()
 
+
     def add(self):
-        if self.nameEdit.placeholderText() == "Name of Item":
-            self.nameEdit.setPlaceholderText("Please Enter a Name!")
+        if self.nameEdit.toPlainText().strip() == "":
+            self.nameEdit.setPlaceholderText("Voer een naam in!")
         else:
-            if self.nameEdit.text() != "" and self.nameEdit.placeholderText() != "Please Enter a Name":
-                self.close()
-            else:
-                print("error")
+            self.close()
 
 
 if __name__ == "__main__":
