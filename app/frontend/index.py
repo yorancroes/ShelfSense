@@ -4,7 +4,7 @@ from PyQt6.uic import loadUi #is voor QT Designer als mag gebruiken
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 import os
-from backend.user import User
+from app.backend.user import User
 from app.backend.helpers import WindowHelpers
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
