@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QApplication
 import sys
 from frontend.index import MainWindow
-from Database.database_scripts.init_db import init_db
+from app.Database.database_scripts.init_db import init_db
 
 def main():
 

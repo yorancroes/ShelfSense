@@ -1,6 +1,6 @@
 import bcrypt
-from Database.database_scripts.connect import connect_db
-
+from app.Database.database_scripts.connect import connect_db
+#TODO: MAKE GET USER_ID METHOD
 
 class User:
     def __init__(self, username, password):
@@ -67,6 +67,8 @@ class User:
 
             if conn is not None:
                 conn.close()
+
+
 
     def test_user(self):
         print("username:", self.username, "password:", self.hashed_password)
