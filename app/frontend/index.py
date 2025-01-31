@@ -112,9 +112,16 @@ class AddWindow(QMainWindow):
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
         self.deleteButton.clicked.connect(self.delete)
+        self.addButton.clicked.connect(self.add)
 
     def delete(self):
         self.close()
+
+    def add(self):
+        if self.nameEdit.placeholderText() == "Name of Item":
+            self.nameEdit.setPlaceholderText("Please Enter a Name!")
+        else:
+            self.close()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
