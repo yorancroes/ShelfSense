@@ -121,7 +121,11 @@ class AddWindow(QMainWindow):
         if self.nameEdit.placeholderText() == "Name of Item":
             self.nameEdit.setPlaceholderText("Please Enter a Name!")
         else:
-            self.close()
+            if self.nameEdit.text() != "" and self.nameEdit.placeholderText() != "Please Enter a Name":
+                self.close()
+            else:
+                print("error")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
