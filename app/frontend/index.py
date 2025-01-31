@@ -1,11 +1,12 @@
 import sys
 from PyQt6 import QtCore, QtGui, QtWidgets, uic
 from PyQt6.uic import loadUi #is voor QT Designer als mag gebruiken
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 import os
 from app.backend.user import User
 from app.backend.helpers import WindowHelpers
+import requests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -98,8 +99,25 @@ class MenuWindow(QMainWindow, WindowHelpers):
         self.closeButton.clicked.connect(super().closing)
         self.miniButton.clicked.connect(super().mini)
         self.label_8.setText(gebruiker.get_username())
+        self.load_image_from_url()
         #TODO: label_7 moet totale aantal items weergeven!!!
         self.addButton.clicked.connect(self.add)
+
+    def load_image_from_url(self, url):
+        # URL of the image
+        self.url = url
+
+        # Fetch the image from the URL
+        response = requests.get(self.url)
+        if response.status_code == 200:
+            # Save the image to a temporary file
+            with open("temp_image.jpg", "wb") as file:
+                file.write(response.content)
+
+            # Load the image and set it to the QLabel
+            pixmap = QPixmap("temp_image.jpg")
+            self.coverLabel.setPixmap(pixmap)
+            self.coverLabel.setScaledContents(True)
 
     def add(self):
         self.win = AddWindow()
