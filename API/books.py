@@ -1,8 +1,3 @@
-import json
-import os
-import sys
-from re import search
-
 import requests
 from dotenv import load_dotenv
 
