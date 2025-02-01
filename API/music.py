@@ -17,7 +17,8 @@ def searchMusic(album_name):
     response = requests.get(base_url, params=params)
     if response.status_code == 200:
         data = response.json()
-        albums = data.get("results", {}).get("albummatches", {}).get("album", [])
+        albums = data.get("results", {}).get("albummatches", {}).get("album", []) #we steken de ongefilterde data in een eerste lijst
+        #we filteren de data zodat we enkel de nodige informatie eruithalen en in onze definiteive lijst steken
         albums_filtered = [
             {
                 "name": album.get("title"),
@@ -28,7 +29,7 @@ def searchMusic(album_name):
             }
             for album in albums
         ]
-        return albums_filtered
+        return albums_filtered #we geven de gefilterde definitieve lijst terug als output van de functie
 
 albums = searchMusic("Thriller")
 for album in albums:
