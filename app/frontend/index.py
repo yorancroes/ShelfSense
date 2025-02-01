@@ -99,7 +99,7 @@ class MenuWindow(QMainWindow, WindowHelpers):
         self.closeButton.clicked.connect(super().closing)
         self.miniButton.clicked.connect(super().mini)
         self.label_8.setText(gebruiker.get_username())
-        self.load_image_from_url()
+        self.load_image_from_url("https://lastfm.freetls.fastly.net/i/u/174s/16916e04f2ff8c50bd47951cb9b5218c.png")
         #TODO: label_7 moet totale aantal items weergeven!!!
         self.addButton.clicked.connect(self.add)
 
