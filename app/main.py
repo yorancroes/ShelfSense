@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QApplication
 import sys
-from frontend.index import MainWindow
+from app.frontend.windows.MainWindow import MainWindow
 from app.Database.database_scripts.init_db import init_db
 
 def main():
@@ -8,7 +8,6 @@ def main():
     init_db()
     app = QApplication(sys.argv)
     main_window = MainWindow()
-    print("hello")
 
     #main_window.showMaximized();
     main_window.show()  # Toon het hoofdvenster

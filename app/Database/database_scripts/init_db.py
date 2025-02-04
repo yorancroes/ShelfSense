@@ -15,10 +15,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS vinyls (
             id SERIAL PRIMARY KEY,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
-            name VARCHAR(255) NOT NULL,
-            description VARCHAR(255) NOT NULL,
-            category VARCHAR(255) NOT NULL,
-            price FLOAT NOT NULL,
+            album VARCHAR(255) NOT NULL,
             artist VARCHAR(255),
             image_path VARCHAR(255),
             release_date DATE,
