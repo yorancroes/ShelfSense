@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QMainWindow
 from app.backend.helpers import WindowHelpers
 from app.backend.user import User
 from app.frontend.windows.MenuWIndow import  MenuWindow
+from app.backend.items import *
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -28,10 +29,11 @@ class LoginWindow(QMainWindow, WindowHelpers):
         username = self.lineEdit.text()
         password = self.lineEdit_2.text()
         gebruiker = User(username, password)
-        print(f"logging in: {gebruiker.username}")
 
         if gebruiker.verify_password(password):
-            print("login successful")
+            id = gebruiker.GetUserId()
+            user_vinyls = load_vinyls(id)
+            gebruiker.SetVinyls(user_vinyls)
             self.win = MenuWindow(gebruiker)
             self.win.show()
             self.close()

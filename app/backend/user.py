@@ -6,6 +6,7 @@ class User:
     def __init__(self, username, password):
         self.username = username
         self.hashed_password = self.hash_password(password)
+        self.vinyls = None
 
     def hash_password(self, password):
         salt = bcrypt.gensalt()
@@ -68,7 +69,35 @@ class User:
             if conn is not None:
                 conn.close()
 
+    def GetUserId(self):
+        conn = None
+        cursor = None
+        try:
+            conn = connect_db()
+            cursor = conn.cursor()
+            cursor.execute("SELECT id FROM users WHERE username = %s", (self.username,))
+            result = cursor.fetchone()
+            return result[0]
 
+        except Exception as e:
+            print("Error retrieving user id in the database: ", e)
+
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+            if conn is not None:
+                conn.close()
 
     def test_user(self):
         print("username:", self.username, "password:", self.hashed_password)
+
+    def SetVinyls(self, user_vinyls):
+        self.vinyls = user_vinyls
+
+    def AddVinyl(self, vinyl):
+        self.vinyls.append(vinyl)
+        print(self.vinyls)
+
+    def GetVinyls(self):
+        return  self.vinyls

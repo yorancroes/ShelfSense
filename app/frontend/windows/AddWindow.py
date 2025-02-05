@@ -10,8 +10,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class AddWindow(QMainWindow,WindowHelpers):
-    def __init__(self, menu_window):
+    def __init__(self, menu_window, gebruiker):
         super(AddWindow, self).__init__()
+        self.gebruiker = gebruiker
         self.menu_window = menu_window
         uic.loadUi(os.path.join(BASE_DIR, "../UI/toevoegen.ui"), self)
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
@@ -21,17 +22,21 @@ class AddWindow(QMainWindow,WindowHelpers):
         self.searchButton.clicked.connect(self.search)
 
     def search(self):
-        album_text = self.searchBar.toPlainText().strip()
-        albums = searchMusic(album_text)
-        vinyls = []
+        user_id = self.gebruiker.GetUserId()
 
+        if self.LPButton.isChecked():
+            album_text = self.searchBar.toPlainText().strip()
+            albums = searchMusic(album_text)
+            vinyls = []
 
-        for album in albums:
-            vinyl = Vinyl(album)
-            vinyl.load(self.menu_window.coverLabel)
-            vinyls.append(vinyl)
-        print(vinyls)
-
+            for album in albums:
+                vinyl = Vinyl(album)
+                vinyl.load(self.menu_window.coverLabel)
+                self.gebruiker.AddVinyl(vinyl)
+                vinyl.upload(user_id)
+            print(vinyls)
+        else:
+            print("no button selecetd")
 
     def delete(self):
         self.close()

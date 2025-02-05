@@ -22,7 +22,8 @@ class MenuWindow(QMainWindow, WindowHelpers):
         # TODO: label_7 moet totale aantal items weergeven!!!
         self.addButton.clicked.connect(self.add)
         self.coverLabel = self.findChild(QLabel, "coverLabel")
+        vinyls = self.gebruiker.GetVinyls()
 
     def add(self):
-        self.win = AddWindow(self)
+        self.win = AddWindow(self, self.gebruiker)
         self.win.show()

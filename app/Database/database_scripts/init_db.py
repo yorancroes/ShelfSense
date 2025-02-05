@@ -18,7 +18,6 @@ def init_db():
             album VARCHAR(255) NOT NULL,
             artist VARCHAR(255),
             image_path VARCHAR(255),
-            release_date DATE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """,
