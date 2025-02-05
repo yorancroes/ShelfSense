@@ -11,6 +11,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class AddWindow(QMainWindow,WindowHelpers):
     def __init__(self, menu_window, gebruiker):
+        super(AddWindow).__init__()
         super(AddWindow, self).__init__()
         self.gebruiker = gebruiker
         self.menu_window = menu_window
@@ -20,23 +21,25 @@ class AddWindow(QMainWindow,WindowHelpers):
         self.deleteButton.clicked.connect(self.delete)
         self.addButton.clicked.connect(self.add)
         self.searchButton.clicked.connect(self.search)
+        self.vinyl = None
+        self.image = None
 
     def search(self):
-        user_id = self.gebruiker.GetUserId()
 
         if self.LPButton.isChecked():
             album_text = self.searchBar.toPlainText().strip()
             albums = searchMusic(album_text)
-            vinyls = []
+            
+            album = albums[0]
+            print(album)
+            self.nameEdit.setText(album['name'])
+            self.iets1.setText(album['artist'])
+            self.image = album['image']
 
-            for album in albums:
-                vinyl = Vinyl(album)
-                vinyl.load(self.menu_window.coverLabel)
-                self.gebruiker.AddVinyl(vinyl)
-                vinyl.upload(user_id)
-            print(vinyls)
+
+
         else:
-            print("no button selecetd")
+            print("no button selected")
 
     def delete(self):
         self.close()
@@ -47,7 +50,13 @@ class AddWindow(QMainWindow,WindowHelpers):
             self.nameEdit.setPlaceholderText("Voer een naam in!")
         else:
             self.close()
-
-    def set_cover_image(self, image_path):
-        pixmap = QPixmap(image_path)
-        self.coverLabel.setPixmap(pixmap.scaled(self.coverLabel.size(), QtCore.Qt.AspectRatioMode.KeepAspectRatio))
+            vinyl = {}
+            vinyl['name'] = self.nameEdit.toPlainText().strip()
+            vinyl['artist'] = self.iets1.toPlainText().strip()
+            vinyl['image'] = self.image
+            vinyl['description'] = self.iets2.toPlainText().strip()
+            print(vinyl)
+            self.vinyl = Vinyl(vinyl)
+            print(self.vinyl)
+            self.vinyl.upload(self.gebruiker.GetUserId())
+            #TODO: self.vinyl.load() label aanmaken voor de vinyl om te loaden

@@ -1,4 +1,3 @@
-from _pyrepl import console
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt6.QtGui import QIcon, QPixmap
 from app.Database.database_scripts.connect import connect_db
@@ -27,18 +26,19 @@ class Vinyl(Item):
         self.title = self.Api_Dict['name']
         self.artist = self.Api_Dict['artist']
         self.image_url = self.Api_Dict['image']
+        self.description = self.Api_Dict['description']
         self.id = id
 
     def upload(self, user_id):
         query = """
-        INSERT INTO vinyls (user_id, album, artist, image_path)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO vinyls (user_id, album, artist, image_path, description)
+        VALUES (%s, %s, %s, %s, %s)
         RETURNING id;
         """
         conn = connect_db()
         try:
             with conn.cursor() as cursor:
-                cursor.execute(query, (user_id, self.title, self.artist, self.image_url))
+                cursor.execute(query, (user_id, self.title, self.artist, self.image_url, self.description))
                 self.id = cursor.fetchone()[0]
                 conn.commit()
                 print(f"Vinyl inserted with ID: {self.id}")
@@ -90,7 +90,7 @@ class Book(Item):
 
 def load_vinyls(user_id):
     vinyls = []
-    query = "SELECT id, album, artist, image_path FROM vinyls WHERE user_id = %s;"
+    query = "SELECT id, album, artist, image_path, description FROM vinyls WHERE user_id = %s;"
     conn = connect_db()
 
     try:
@@ -99,8 +99,8 @@ def load_vinyls(user_id):
             results = cursor.fetchall()  # Get all records
 
             for row in results:
-                vinyl_id, album, artist, image_path = row
-                api_dict = {'name': album, 'artist': artist, 'image': image_path}
+                vinyl_id, album, artist, image_path, description = row
+                api_dict = {'name': album, 'artist': artist, 'image': image_path, 'description': description }
                 vinyl = Vinyl(api_dict, id=vinyl_id)
                 vinyls.append(vinyl)
 

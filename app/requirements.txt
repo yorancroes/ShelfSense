@@ -1,3 +1,5 @@
 psycopg2-binary
 bcrypt
 pyqt6
+requests
+python-dotenv

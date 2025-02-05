@@ -99,5 +99,3 @@ class User:
         self.vinyls.append(vinyl)
         print(self.vinyls)
 
-    def GetVinyls(self):
-        return  self.vinyls

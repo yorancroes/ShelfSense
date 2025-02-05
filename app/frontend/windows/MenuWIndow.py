@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel
 from app.backend.helpers import WindowHelpers
 from app.frontend.windows.AddWindow import AddWindow
 from app.backend.user import User
+from app.backend.items import *
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,7 +23,10 @@ class MenuWindow(QMainWindow, WindowHelpers):
         # TODO: label_7 moet totale aantal items weergeven!!!
         self.addButton.clicked.connect(self.add)
         self.coverLabel = self.findChild(QLabel, "coverLabel")
-        vinyls = self.gebruiker.GetVinyls()
+        vinyls = load_vinyls(self.gebruiker.GetUserId())
+        # for vinyl in vinyls:
+        #     vinyl.load()
+        print(vinyls)
 
     def add(self):
         self.win = AddWindow(self, self.gebruiker)
