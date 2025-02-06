@@ -13,7 +13,7 @@ def searchMusic(album_name):
         'album': album_name,
         'api_key': MY_API_KEY,
         'format': 'json',
-        'limit': 1
+        'limit': 8
     }
     response = requests.get(base_url, params=params)
     if response.status_code == 200:
