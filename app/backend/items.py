@@ -19,32 +19,32 @@ class Item(ABC):
     def load(self):
         pass
 
-
 class VinylCard(QFrame):
     def __init__(self, vinyl, parent=None):
         super().__init__(parent)
         self.setObjectName("vinylCard")
-        self.setFixedSize(180, 240)  # Reduced size
+        self.setFixedSize(160, 220)  # Made overall card smaller
         self.setStyleSheet("""
             #vinylCard {
-                background-color: white;
+                background-color: transparent;  # Removed white background
                 border-radius: 8px;
                 padding: 8px;
                 margin: 5px;
             }
             QLabel {
                 color: #333333;
+                background-color: transparent;  # Ensure labels are also transparent
             }
         """)
 
         # Create layout
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(4)
+        layout.setContentsMargins(4, 4, 4, 4)  # Reduced margins
+        layout.setSpacing(2)  # Reduced spacing between elements
 
         # Image
         self.image_label = QLabel()
-        self.image_label.setFixedSize(164, 164)  # Adjusted size
+        self.image_label.setFixedSize(140, 140)  # Made image smaller
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_label.setScaledContents(True)
         self.load_image(vinyl.image_url)
@@ -52,16 +52,25 @@ class VinylCard(QFrame):
 
         # Album name
         name_label = QLabel(vinyl.name)
-        name_label.setStyleSheet("font-weight: bold; font-size: 12px;")
+        name_label.setStyleSheet("""
+            font-weight: bold; 
+            font-size: 13px;
+        """)
         name_label.setWordWrap(True)
         name_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(name_label)
 
         # Artist
         artist_label = QLabel(vinyl.artist)
-        artist_label.setStyleSheet("color: #666666; font-size: 10px;")
+        artist_label.setStyleSheet("""
+            color: #666666; 
+            font-size: 11px;
+        """)
         artist_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(artist_label)
+
+        # Add stretch to push everything to the top
+        layout.addStretch()
 
     def load_image(self, image_url):
         try:

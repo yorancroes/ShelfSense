@@ -88,8 +88,7 @@ class AddWindow(QMainWindow,WindowHelpers):
             vinyl['description'] = self.iets2.toPlainText().strip()
             self.vinyl = Vinyl(vinyl)
             self.vinyl.upload(self.gebruiker.GetUserId())
-            self.vinyl.load(self.menu_window.scroll_area)
-
+            self.menu_window.load_vinyls()
     def album_selected(self, index):
         item = self.model.itemFromIndex(index)
         album = item.data(QtCore.Qt.ItemDataRole.UserRole)  # Retrieve stored album data
