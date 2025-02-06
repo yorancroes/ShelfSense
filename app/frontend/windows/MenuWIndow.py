@@ -2,7 +2,7 @@ from PyQt6 import QtCore, uic
 from PyQt6.QtWidgets import QMainWindow, QGridLayout, QWidget
 from app.backend.helpers import WindowHelpers
 from app.frontend.windows.AddWindow import AddWindow
-from app.backend.items import load_vinyls
+from app.backend.items import load_items
 import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -39,40 +39,40 @@ class MenuWindow(QMainWindow, WindowHelpers):
                 child.deleteLater()
 
             # Initial load of vinyls
-            self.load_vinyls()
+            self.load_items()
 
         except Exception as e:
             print(f"Error initializing MenuWindow: {e}")
             import traceback
             traceback.print_exc()
 
-    def load_vinyls(self):
+    def load_items(self):
         try:
-            # Clear existing items from grid
             while self.grid_layout.count():
                 item = self.grid_layout.takeAt(0)
                 if item.widget():
                     item.widget().deleteLater()
 
-            vinyls = load_vinyls(self.gebruiker.GetUserId())
+            items = load_items(self.gebruiker.GetUserId(), item_type='vinyl') + load_items(self.gebruiker.GetUserId(),
+                                                                                           item_type='game')
 
             # Update total items label
             if hasattr(self, 'label_7'):
-                self.label_7.setText(str(len(vinyls)))
+                self.label_7.setText(str(len(items)))
 
-            # Add vinyl cards to grid
+            # Add item cards to grid
             columns = 3
-            for i, vinyl in enumerate(vinyls):
+            for i, item in enumerate(items):
                 row = i // columns
                 col = i % columns
-                vinyl.load(self.grid_layout, row, col)
+                item.load(self.grid_layout, row, col)
 
             # Add stretch to fill empty space
             self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
             self.grid_layout.setColumnStretch(self.grid_layout.columnCount(), 1)
 
         except Exception as e:
-            print(f"Error loading vinyls: {e}")
+            print(f"Error loading items: {e}")
             import traceback
             traceback.print_exc()
 

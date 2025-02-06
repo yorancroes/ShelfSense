@@ -28,12 +28,8 @@ def init_db():
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
             name VARCHAR(255) NOT NULL,
             description VARCHAR(255) NOT NULL,
-            category VARCHAR(255) NOT NULL,
             publisher VARCHAR(255) NOT NULL,
             image_path VARCHAR(255),
-            price FLOAT NOT NULL,
-            platform VARCHAR(100),
-            release_date DATE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """,

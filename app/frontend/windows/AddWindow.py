@@ -5,7 +5,8 @@ from PyQt6.QtGui import QPixmap, QImage, QStandardItemModel, QIcon, QStandardIte
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QListView
 from app.backend.helpers import WindowHelpers
 from API.music import searchMusic
-from app.backend.items import Vinyl
+from API.games import search_games
+from app.backend.items import Vinyl, Game
 import requests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,6 +29,7 @@ class AddWindow(QMainWindow,WindowHelpers):
         self.menu_window = menu_window
         self.vinyl = None
         self.image = None
+        self.game = None
 
         self.model = QStandardItemModel()
         self.search_items.setModel(self.model)
@@ -71,6 +73,35 @@ class AddWindow(QMainWindow,WindowHelpers):
                 item.setData(album, QtCore.Qt.ItemDataRole.UserRole)
 
                 self.model.appendRow(item)
+        elif self.gameButton.isChecked():
+            game_text = self.searchBar.toPlainText().strip()
+            games = search_games(game_text)
+            if not games:
+                print("No games found")
+                return
+
+            self.model.clear()
+            for game in games:
+                pixmap = QPixmap()
+                image_url = game.get('cover_image', '')
+                if image_url:
+                    try:
+                        response = requests.get(image_url, timeout=5)
+                        if response.status_code == 200:
+                            pixmap.loadFromData(response.content)
+                    except requests.RequestException:
+                        print(f"Could not load image: {image_url}")
+
+
+                icon = QIcon(pixmap)
+                item = QStandardItem()
+                item.setText(f"{game['name']} - {game['publisher'][0]}")
+                item.setIcon(icon)
+                item.setEditable(False)
+
+                item.setData(game, QtCore.Qt.ItemDataRole.UserRole)
+                self.model.appendRow(item)
+
 
     def delete(self):
         self.close()
@@ -80,23 +111,53 @@ class AddWindow(QMainWindow,WindowHelpers):
         if self.nameEdit.toPlainText().strip() == "":
             self.nameEdit.setPlaceholderText("Voer een naam in!")
         else:
-            self.close()
-            vinyl = {}
-            vinyl['name'] = self.nameEdit.toPlainText().strip()
-            vinyl['artist'] = self.iets1.toPlainText().strip()
-            vinyl['image'] = self.image
-            vinyl['description'] = self.iets2.toPlainText().strip()
-            self.vinyl = Vinyl(vinyl)
-            self.vinyl.upload(self.gebruiker.GetUserId())
-            self.menu_window.load_vinyls()
-    def album_selected(self, index):
-        item = self.model.itemFromIndex(index)
-        album = item.data(QtCore.Qt.ItemDataRole.UserRole)  # Retrieve stored album data
+            if self.LPButton.isChecked():
+                vinyl = {}
+                vinyl['name'] = self.nameEdit.toPlainText().strip()
+                vinyl['artist'] = self.iets1.toPlainText().strip()
+                vinyl['image'] = self.image
+                vinyl['description'] = self.iets2.toPlainText().strip()
 
-        if album:
-            self.nameEdit.setText(album.get('name', ''))
-            self.iets1.setText(album.get('artist', ''))
-            self.image = album.get('image', '')  # Store image URL for later use
+                self.vinyl = Vinyl(vinyl)
+                self.vinyl.upload(self.gebruiker.GetUserId())
+                self.menu_window.load_items()
+                self.close()
+
+            elif self.gameButton.isChecked():
+                game = {}
+                game['name'] = self.nameEdit.toPlainText().strip()
+                game['publisher'] = self.iets1.toPlainText().strip()
+                game['image'] = self.image
+                game['description'] = self.iets2.toPlainText().strip()
+
+                self.game = Game(game)
+                self.game.upload(self.gebruiker.GetUserId())
+                self.menu_window.load_items()
+                self.close()
+
+
+    def album_selected(self, index):
+        if self.LPButton.isChecked():
+            item = self.model.itemFromIndex(index)
+            album = item.data(QtCore.Qt.ItemDataRole.UserRole)  # Retrieve stored album data
+
+            if album:
+                self.nameEdit.setText(album.get('name', ''))
+                self.iets1.setText(album.get('artist', ''))
+                self.image = album.get('image', '')  # Store image URL for later use
+
+        elif self.gameButton.isChecked():
+            item = self.model.itemFromIndex(index)
+            game = item.data(QtCore.Qt.ItemDataRole.UserRole)
+
+            if game:
+                self.nameEdit.setText(game.get('name', ''))
+                publishers = game.get('publisher', [])
+                if publishers:
+                    self.iets1.setText(publishers[0])
+                self.image = game.get('cover_image', '')
+
+
 
 
 class AlbumDelegate(QtWidgets.QStyledItemDelegate):

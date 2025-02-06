@@ -51,5 +51,3 @@ def search_games(game_name):
             games.append(game_info)
         return games #we combineren beide info van beide calls en steken ze in de games list
 
-for game in search_games("Cyberpunk"):
-    print(game)
