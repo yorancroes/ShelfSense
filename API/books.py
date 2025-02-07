@@ -18,7 +18,7 @@ def searchBooks(book_name):
         books = [
             {
                 "title": book.get("title"),
-                "authors": book.get("authors"),
+                "authors": book.get("authors", []),
                 "description": book.get("description"),
                 "imageLinks": {"thumbnail": book.get("imageLinks", {}).get("thumbnail")}
             }

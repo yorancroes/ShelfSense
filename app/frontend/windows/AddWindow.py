@@ -6,7 +6,8 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QListView
 from app.backend.helpers import WindowHelpers
 from API.music import searchMusic
 from API.games import search_games
-from app.backend.items import Vinyl, Game
+from API.books import searchBooks
+from app.backend.items import Vinyl, Game, Book
 import requests
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -30,6 +31,7 @@ class AddWindow(QMainWindow,WindowHelpers):
         self.vinyl = None
         self.image = None
         self.game = None
+        self.book = None
 
         self.model = QStandardItemModel()
         self.search_items.setModel(self.model)
@@ -73,6 +75,7 @@ class AddWindow(QMainWindow,WindowHelpers):
                 item.setData(album, QtCore.Qt.ItemDataRole.UserRole)
 
                 self.model.appendRow(item)
+
         elif self.gameButton.isChecked():
             game_text = self.searchBar.toPlainText().strip()
             games = search_games(game_text)
@@ -100,6 +103,35 @@ class AddWindow(QMainWindow,WindowHelpers):
                 item.setEditable(False)
 
                 item.setData(game, QtCore.Qt.ItemDataRole.UserRole)
+                self.model.appendRow(item)
+
+        elif self.bookButton.isChecked():
+            book_text = self.searchBar.toPlainText().strip()
+            books = searchBooks(book_text)
+            if not books:
+                print("No books found")
+                return
+
+            self.model.clear()
+            for book in books:
+                pixmap = QPixmap()
+                image_url = book.get('cover_image', '')
+                if image_url:
+                    try:
+                        response = requests.get(image_url, timeout=5)
+                        if response.status_code == 200:
+                            pixmap.loadFromData(response.content)
+                    except requests.RequestException:
+                        print(f"Could not load image: {image_url}")
+
+
+                icon = QIcon(pixmap)
+                item = QStandardItem()
+                item.setText(f"{book['name']} - {book['author'][0]}")
+                item.setIcon(icon)
+                item.setEditable(False)
+
+                item.setData(book, QtCore.Qt.ItemDataRole.UserRole)
                 self.model.appendRow(item)
 
 
@@ -135,6 +167,18 @@ class AddWindow(QMainWindow,WindowHelpers):
                 self.menu_window.load_items()
                 self.close()
 
+            elif self.bookButton.isChecked():
+                book = {}
+                book['name'] = self.nameEdit.toPlainText().strip()
+                book['author'] = self.iets1.toPlainText().strip()
+                book['image'] = self.image
+                book['description'] = self.iets2.toPlainText().strip()
+
+                self.book = Book(book)
+                self.book.upload(self.gebruiker.GetUserId())
+                self.menu_window.load_items()
+                self.close()
+
 
     def album_selected(self, index):
         if self.LPButton.isChecked():
@@ -157,7 +201,16 @@ class AddWindow(QMainWindow,WindowHelpers):
                     self.iets1.setText(publishers[0])
                 self.image = game.get('cover_image', '')
 
+        elif self.bookButton.isChecked():
+            item = self.model.itemFromIndex(index)
+            book = item.data(QtCore.Qt.ItemDataRole.UserRole)
 
+            if book:
+                self.nameEdit.setText(book.get('name', ''))
+                authors = book.get('author', [])
+                if authors:
+                    self.iets1.setText(authors[0])
+                self.image = book.get('cover_image', '')
 
 
 class AlbumDelegate(QtWidgets.QStyledItemDelegate):

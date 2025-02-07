@@ -37,13 +37,10 @@ def init_db():
         CREATE TABLE IF NOT EXISTS books (
             id SERIAL PRIMARY KEY,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
-            title VARCHAR(255) NOT NULL,
-            price FLOAT NOT NULL,
+            name VARCHAR(255) NOT NULL,
             description VARCHAR(255) NOT NULL,
-            category VARCHAR(255) NOT NULL,
+            image_path VARCHAR(255),
             author VARCHAR(255),
-            publisher VARCHAR(255) NOT NULL,
-            publication_date DATE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """

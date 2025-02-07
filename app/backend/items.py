@@ -291,6 +291,130 @@ class GameCard(QFrame):
         self.image_label.setText("🎵")
         self.image_label.setStyleSheet("QLabel { background-color: #f0f0f0; font-size: 48px; }")
 
+class Book(Item):
+    def __init__(self, Api_Dict, id=None):
+        print("book init called")
+        super().__init__(
+            user_id=None,  # You'll need to pass the correct user_id if available
+            name=Api_Dict['name'],
+            price=None,  # Games might not have a price, adjust as needed
+            description=Api_Dict['description'],
+            category="book"
+        )
+        self.Api_Dict = Api_Dict
+        self.authors = Api_Dict['authors']
+        self.image_url = Api_Dict['image']
+        self.id = id
+
+    def upload(self, user_id):
+        query = """
+        INSERT INTO books (user_id, name, authors, image_path, description)
+        VALUES (%s, %s, %s, %s, %s)
+        RETURNING id;
+        """
+        conn = connect_db()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(query, (user_id, self.name, self.authors, self.image_url, self.description))
+                self.id = cursor.fetchone()[0]
+                conn.commit()
+                print(f"Book inserted with ID: {self.id}")
+        except Exception as e:
+            print(f"Database error: {e}")
+            conn.rollback()
+        finally:
+            conn.close()
+
+    def load(self, grid_layout, row, col):
+        try:
+            book_card = BookCard(self)
+            grid_layout.addWidget(book_card, row, col, Qt.AlignmentFlag.AlignCenter)
+        except Exception as e:
+            print(f"Error while loading book: {e}")
+
+
+class BookCard(QFrame):
+    def __init__(self, book, parent=None):
+        super().__init__(parent)
+        self.setObjectName("BookCard")
+        self.setFixedSize(160, 220)  # Made overall card smaller
+        self.setStyleSheet("""
+            #vinylCard {
+                background-color: transparent;  # Verwijderd witte achtergond
+                border-radius: 8px;
+                padding: 8px;
+                margin: 5px;
+            }
+            QLabel {
+                color: #333333;
+                background-color: transparent;  # Maakt label ook transparant
+            }
+        """)
+
+        # Create layout
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(4, 4, 4, 4)  # Reduced margins
+        layout.setSpacing(2)  # Reduced spacing between elements
+
+        # Image
+        self.image_label = QLabel()
+        self.image_label.setFixedSize(140, 140)  # Made image smaller
+        self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.image_label.setScaledContents(True)
+        self.load_image(book.image_url)
+        layout.addWidget(self.image_label)
+
+        # Album name
+        name_label = QLabel(book.name)
+        name_label.setStyleSheet("""
+            font-weight: bold; 
+            font-size: 13px;
+        """)
+        name_label.setWordWrap(True)
+        name_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(name_label)
+
+        # Artist
+        artist_label = QLabel(book.authors)
+        artist_label.setStyleSheet("""
+            color: #666666; 
+            font-size: 11px;
+        """)
+        artist_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(artist_label)
+
+        # Add stretch to push everything to the top
+        layout.addStretch()
+
+    def load_image(self, image_url):
+        try:
+            if image_url:
+                # Try to download the image if it's a URL
+                if image_url.startswith(('http://', 'https://')):
+                    response = requests.get(image_url, timeout=5)
+                    if response.status_code == 200:
+                        pixmap = QPixmap()
+                        pixmap.loadFromData(response.content)
+                        self.image_label.setPixmap(pixmap)
+                else:
+                    # Try to load as local file
+                    pixmap = QPixmap(image_url)
+                    if not pixmap.isNull():
+                        self.image_label.setPixmap(pixmap)
+                    else:
+                        self.set_placeholder_image()
+            else:
+                self.set_placeholder_image()
+        except Exception as e:
+            print(f"Error loading image: {e}")
+            self.set_placeholder_image()
+
+
+    def set_placeholder_image(self):
+        # Create a basic placeholder with album icon
+        self.image_label.setText("🎵")
+        self.image_label.setStyleSheet("QLabel { background-color: #f0f0f0; font-size: 48px; }")
+
 
 def load_items(user_id, item_type='vinyl'):
     items = []
@@ -298,6 +422,8 @@ def load_items(user_id, item_type='vinyl'):
         query = "SELECT id, album, artist, image_path, description FROM vinyls WHERE user_id = %s;"
     elif item_type == 'game':
         query = "SELECT id, name, publisher, image_path, description FROM games WHERE user_id = %s;"
+    elif item_type == 'book':
+        query = "SELECT id, name, author, image_path, description FROM books WHERE user_id = %s;"
     else:
         raise ValueError("Invalid item type")
 
@@ -326,7 +452,16 @@ def load_items(user_id, item_type='vinyl'):
                         'image': image_path,
                         'description': description
                     }
-                    item = Game(api_dict, id=game_id)
+                    item = Book(api_dict, id=game_id)
+                elif item_type == 'book':
+                    book_id, book, authors, image_path, description = row
+                    api_dict = {
+                        'name': name,
+                        'authors': authors,
+                        'image': image_path,
+                        'description': description
+                    }
+                    item = Book(api_dict, id=book_id)
 
                 items.append(item)
 

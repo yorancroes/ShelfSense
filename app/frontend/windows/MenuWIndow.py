@@ -54,7 +54,7 @@ class MenuWindow(QMainWindow, WindowHelpers):
                     item.widget().deleteLater()
 
             items = load_items(self.gebruiker.GetUserId(), item_type='vinyl') + load_items(self.gebruiker.GetUserId(),
-                                                                                           item_type='game')
+            item_type='game') + load_items(self.gebruiker.GetUserId(),item_type='book')
 
             # Update total items label
             if hasattr(self, 'label_7'):
