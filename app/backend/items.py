@@ -292,13 +292,13 @@ class GameCard(QFrame):
 
 class Book(Item):
     def __init__(self, Api_Dict, id=None):
-        print("book init called")
         self.Api_Dict = Api_Dict
         print(Api_Dict)
         self.name = Api_Dict['title']
         self.authors = Api_Dict['author']
-        image_dict  = Api_Dict['imageLinks']
-        self.image_url = image_dict['thumbnail']
+
+
+        self.image_url = Api_Dict['imageLinks']
         self.description = Api_Dict['description']
         self.id = id
 

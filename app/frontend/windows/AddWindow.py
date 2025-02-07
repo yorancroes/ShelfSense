@@ -211,7 +211,8 @@ class AddWindow(QMainWindow,WindowHelpers):
                 authors = book.get('authors', [])
                 if authors:
                     self.iets1.setText(authors[0])
-                self.image = book.get('imageLinks', '')
+                image_dict = book.get('imageLinks', '')
+                self.image = image_dict['thumbnail']
 
 
 class AlbumDelegate(QtWidgets.QStyledItemDelegate):
