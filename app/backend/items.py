@@ -168,7 +168,6 @@ def load_vinyls(user_id):
 
 class Game(Item):
     def __init__(self, Api_Dict, id=None):
-        print("game init called")
         super().__init__(
             user_id=None,  # You'll need to pass the correct user_id if available
             name=Api_Dict['name'],
@@ -423,50 +422,35 @@ def load_items(user_id, item_type='vinyl'):
     elif item_type == 'game':
         query = "SELECT id, name, publisher, image_path, description FROM games WHERE user_id = %s;"
     elif item_type == 'book':
-        query = "SELECT id, name, author, image_path, description FROM books WHERE user_id = %s;"
+        query = "SELECT id, name, authors, image_path, description FROM books WHERE user_id = %s;"
     else:
         raise ValueError("Invalid item type")
 
     conn = connect_db()
-
     try:
         with conn.cursor() as cursor:
             cursor.execute(query, (user_id,))
             results = cursor.fetchall()
 
-            for row in results:
-                if item_type == 'vinyl':
-                    vinyl_id, album, artist, image_path, description = row
-                    api_dict = {
-                        'name': album,
-                        'artist': artist,
-                        'image': image_path,
-                        'description': description
-                    }
-                    item = Vinyl(api_dict, id=vinyl_id)
-                elif item_type == 'game':
-                    game_id, name, publisher, image_path, description = row
-                    api_dict = {
-                        'name': name,
-                        'publisher': publisher,
-                        'image': image_path,
-                        'description': description
-                    }
-                    item = Book(api_dict, id=game_id)
-                elif item_type == 'book':
-                    book_id, book, authors, image_path, description = row
-                    api_dict = {
-                        'name': name,
-                        'authors': authors,
-                        'image': image_path,
-                        'description': description
-                    }
-                    item = Book(api_dict, id=book_id)
+            print(f"Fetched {len(results)} {item_type}(s) from the database")  # Debugging print
 
-                items.append(item)
+            for row in results:
+
+                if item_type == 'vinyl':
+                    id_, name, artist, image, description = row
+                    api_dict = {'name': name, 'artist': artist, 'image': image, 'description': description}
+                    items.append(Vinyl(api_dict, id=id_))
+                elif item_type == 'game':
+                    id_, name, publisher, image, description = row
+                    api_dict = {'name': name, 'publisher': publisher, 'image': image, 'description': description}
+                    items.append(Game(api_dict, id=id_))
+                elif item_type == 'book':
+                    id_, name, authors, image, description = row
+                    api_dict = {'name': name, 'authors': authors, 'image': image, 'description': description}
+                    items.append(Book(api_dict, id=id_))
 
     except Exception as e:
-        print(f"Database error: {e}")
+        print(f"Database error in load items: {e}")
     finally:
         conn.close()
 
