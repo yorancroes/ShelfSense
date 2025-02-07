@@ -127,7 +127,7 @@ class AddWindow(QMainWindow,WindowHelpers):
 
                 icon = QIcon(pixmap)
                 item = QStandardItem()
-                item.setText(f"{book['name']} - {book['author'][0]}")
+                item.setText(f"{book['title']} - {book['authors']}")
                 item.setIcon(icon)
                 item.setEditable(False)
 
@@ -169,9 +169,9 @@ class AddWindow(QMainWindow,WindowHelpers):
 
             elif self.bookButton.isChecked():
                 book = {}
-                book['name'] = self.nameEdit.toPlainText().strip()
-                book['author'] = self.iets1.toPlainText().strip()
-                book['image'] = self.image
+                book['title'] = self.nameEdit.toPlainText().strip()
+                book['authors'] = self.iets1.toPlainText().strip()
+                book['imageLinks'] = self.image
                 book['description'] = self.iets2.toPlainText().strip()
 
                 self.book = Book(book)
@@ -206,11 +206,11 @@ class AddWindow(QMainWindow,WindowHelpers):
             book = item.data(QtCore.Qt.ItemDataRole.UserRole)
 
             if book:
-                self.nameEdit.setText(book.get('name', ''))
-                authors = book.get('author', [])
+                self.nameEdit.setText(book.get('title', ''))
+                authors = book.get('authors', [])
                 if authors:
                     self.iets1.setText(authors[0])
-                self.image = book.get('cover_image', '')
+                self.image = book.get('imageLinks', '')
 
 
 class AlbumDelegate(QtWidgets.QStyledItemDelegate):

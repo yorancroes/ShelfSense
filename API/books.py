@@ -1,3 +1,5 @@
+import sys
+
 import requests
 from dotenv import load_dotenv
 
@@ -25,3 +27,7 @@ def searchBooks(book_name):
             for book in volume_info
         ]
         return books
+
+books = searchBooks("harry potter")
+for book in books:
+    print(book["imageLinks"])
