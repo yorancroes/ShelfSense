@@ -147,7 +147,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>400</y>
+        <y>460</y>
         <width>241</width>
         <height>41</height>
        </rect>
@@ -217,7 +217,7 @@ padding-bottom: 7px;</string>
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>470</y>
+        <y>530</y>
         <width>241</width>
         <height>41</height>
        </rect>
@@ -243,7 +243,7 @@ padding-bottom: 7px;</string>
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>550</y>
+        <y>610</y>
         <width>241</width>
         <height>41</height>
        </rect>
@@ -289,6 +289,32 @@ padding-bottom: 7px;</string>
       </property>
       <property name="text">
        <string>look</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="allButton">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>390</y>
+        <width>241</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Verdana</family>
+        <pointsize>14</pointsize>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgba(0,0,0,0);
+border: none;
+border-bottom: 2px solid rgba(255,255,255,100);
+padding-bottom: 7px;</string>
+      </property>
+      <property name="text">
+       <string>ALL</string>
       </property>
      </widget>
     </widget>
@@ -340,7 +366,7 @@ padding-bottom: 7px;</string>
        </font>
       </property>
       <property name="text">
-       <string>LATEST ADDITIONS</string>
+       <string>YOUR ITEMS</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>

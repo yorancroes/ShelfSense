@@ -24,6 +24,10 @@ class MenuWindow(QMainWindow, WindowHelpers):
         self.closeButton.clicked.connect(super().closing)
         self.miniButton.clicked.connect(super().mini)
         self.addButton.clicked.connect(self.add)
+        self.lpButton.clicked.connect(self.filter_vinyls)
+        self.bookButton.clicked.connect(self.filter_books)
+        self.gameButton.clicked.connect(self.filter_games)
+        self.allButton.clicked.connect(self.load_items)
 
         # Set user info
         self.label_8.setText(gebruiker.get_username())
@@ -84,3 +88,43 @@ class MenuWindow(QMainWindow, WindowHelpers):
             print(f"Error opening AddWindow: {e}")
             import traceback
             traceback.print_exc()
+
+    def clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget is not None:
+                widget.deleteLater()
+
+    def filter_vinyls(self):
+        items = load_items(self.gebruiker.GetUserId(), item_type='vinyl')
+        self.label_7.setText(str(len(items)))
+        self.clear_layout(self.grid_layout)
+
+        columns = 3
+        for i, item in enumerate(items):
+            row = i // columns
+            col = i % columns
+            item.load(self.grid_layout, row, col)
+
+    def filter_books(self):
+        items = load_items(self.gebruiker.GetUserId(), item_type='book')
+        self.label_7.setText(str(len(items)))
+        self.clear_layout(self.grid_layout)
+
+        columns = 3
+        for i, item in enumerate(items):
+            row = i // columns
+            col = i % columns
+            item.load(self.grid_layout, row, col)
+
+    def filter_games(self):
+        items = load_items(self.gebruiker.GetUserId(), item_type='game')
+        self.label_7.setText(str(len(items)))
+        self.clear_layout(self.grid_layout)
+
+        columns = 3
+        for i, item in enumerate(items):
+            row = i // columns
+            col = i % columns
+            item.load(self.grid_layout, row, col)
