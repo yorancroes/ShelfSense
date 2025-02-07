@@ -293,28 +293,27 @@ class GameCard(QFrame):
 class Book(Item):
     def __init__(self, Api_Dict, id=None):
         print("book init called")
-        super().__init__(
-            user_id=None,  # You'll need to pass the correct user_id if available
-            name=Api_Dict['name'],
-            price=None,  # Games might not have a price, adjust as needed
-            description=Api_Dict['description'],
-            category="book"
-        )
         self.Api_Dict = Api_Dict
-        self.authors = Api_Dict['authors']
-        self.image_url = Api_Dict['image']
+        print(Api_Dict)
+        self.name = Api_Dict['title']
+        self.authors = Api_Dict['author']
+        image_dict  = Api_Dict['imageLinks']
+        self.image_url = image_dict['thumbnail']
+        self.description = Api_Dict['description']
         self.id = id
 
     def upload(self, user_id):
+
+        print("uplaod called")
         query = """
-        INSERT INTO books (user_id, name, authors, image_path, description)
+        INSERT INTO books (user_id, name, author, description, image_path)
         VALUES (%s, %s, %s, %s, %s)
         RETURNING id;
         """
         conn = connect_db()
         try:
             with conn.cursor() as cursor:
-                cursor.execute(query, (user_id, self.name, self.authors, self.image_url, self.description))
+                cursor.execute(query, (user_id, self.name, self.authors, self.description, self.image_url))
                 self.id = cursor.fetchone()[0]
                 conn.commit()
                 print(f"Book inserted with ID: {self.id}")
@@ -422,7 +421,7 @@ def load_items(user_id, item_type='vinyl'):
     elif item_type == 'game':
         query = "SELECT id, name, publisher, image_path, description FROM games WHERE user_id = %s;"
     elif item_type == 'book':
-        query = "SELECT id, name, authors, image_path, description FROM books WHERE user_id = %s;"
+        query = "SELECT id, name, author, image_path, description FROM books WHERE user_id = %s;"
     else:
         raise ValueError("Invalid item type")
 
@@ -446,7 +445,7 @@ def load_items(user_id, item_type='vinyl'):
                     items.append(Game(api_dict, id=id_))
                 elif item_type == 'book':
                     id_, name, authors, image, description = row
-                    api_dict = {'name': name, 'authors': authors, 'image': image, 'description': description}
+                    api_dict = {'title': name, 'author': authors, 'imageLinks': image, 'description': description}
                     items.append(Book(api_dict, id=id_))
 
     except Exception as e:

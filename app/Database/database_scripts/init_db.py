@@ -38,9 +38,9 @@ def init_db():
             id SERIAL PRIMARY KEY,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
             name VARCHAR(255) NOT NULL,
+            author VARCHAR(255),
             description VARCHAR(255) NOT NULL,
             image_path VARCHAR(255),
-            author VARCHAR(255),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         );
         """

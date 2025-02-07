@@ -171,7 +171,7 @@ class AddWindow(QMainWindow,WindowHelpers):
             elif self.bookButton.isChecked():
                 book = {}
                 book['title'] = self.nameEdit.toPlainText().strip()
-                book['authors'] = self.iets1.toPlainText().strip()
+                book['author'] = self.iets1.toPlainText().strip()
                 book['imageLinks'] = self.image
                 book['description'] = self.iets2.toPlainText().strip()
 
