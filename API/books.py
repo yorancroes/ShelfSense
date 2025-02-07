@@ -25,8 +25,3 @@ def searchBooks(book_name):
             for book in volume_info
         ]
         return books
-
-
-books = searchBooks("Harry Potter")
-for book in books:
-    print(book)
