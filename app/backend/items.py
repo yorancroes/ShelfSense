@@ -422,7 +422,7 @@ def load_items(user_id, item_type='vinyl'):
     elif item_type == 'game':
         query = "SELECT id, name, publisher, image_path, description FROM games WHERE user_id = %s;"
     elif item_type == 'book':
-        query = "SELECT id, name, authors, image_path, description FROM books WHERE user_id = %s;"
+        query = "SELECT id, name, author, image_path, description FROM books WHERE user_id = %s;"
     else:
         raise ValueError("Invalid item type")
 
