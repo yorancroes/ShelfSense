@@ -115,7 +115,8 @@ class AddWindow(QMainWindow,WindowHelpers):
             self.model.clear()
             for book in books:
                 pixmap = QPixmap()
-                image_url = book.get('cover_image', '')
+                image_dict = book.get('imageLinks', '')
+                image_url = image_dict['thumbnail']
                 if image_url:
                     try:
                         response = requests.get(image_url, timeout=5)
