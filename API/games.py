@@ -12,7 +12,8 @@ HEADERS = {"User-Agent": "YourAppName"}
 def get_game_details(game_id):
     params = {
         "api_key": MY_API_KEY,
-        "format": "json"
+        "format": "json",
+        "field_list": "id,name,developers,publishers" #fields om emkel data dat we nodig hebben te verkrijgen.
     }
     response = requests.get(f"{BASE_URL}/game/{game_id}/", params=params, headers=HEADERS)
     if response.status_code == 200:
@@ -24,7 +25,8 @@ def search_games(game_name):
         "api_key": MY_API_KEY,
         "format": "json",
         "query": game_name,
-        "resources": "game"
+        "resources": "game",
+        "field_list": "id,name,platforms,original_release_date,image"
     }
     response = requests.get(f"{BASE_URL}/search/", params=params, headers=HEADERS)
 
@@ -33,12 +35,12 @@ def search_games(game_name):
         games = []
         game_ids = {item["id"]: item for item in data.get("results", []) if "id" in item}
 
-        # Details ophalen met multithreading , we gebruiken multithreading omdat sequentiele calls de applicatie vertragen.
+        # Parallelle details calls. sequentieel zorgt voor een zeer trage api call waardoor we kiezen voor multithreading.
         with concurrent.futures.ThreadPoolExecutor() as executor:
             future_details = {game_id: executor.submit(get_game_details, game_id) for game_id in game_ids}
 
         for game_id, item in game_ids.items():
-            game_details = future_details[game_id].result()  # Wachten op de API-response
+            game_details = future_details[game_id].result()
 
             games.append({
                 "name": item.get("name"),
