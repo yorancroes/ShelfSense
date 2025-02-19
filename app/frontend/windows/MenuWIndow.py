@@ -2,9 +2,9 @@ from PyQt6 import QtCore, uic
 from PyQt6.QtWidgets import QMainWindow, QGridLayout, QWidget, QPushButton
 from app.backend.helpers import WindowHelpers
 from app.frontend.windows.AddWindow import AddWindow
-from app.backend.items import load_items
+from app.backend.items import load_items, Vinyl, Game, Book
 import os
-
+from app.Database.database_scripts.connect import connect_db
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -58,33 +58,30 @@ class MenuWindow(QMainWindow, WindowHelpers):
                 if item.widget():
                     item.widget().deleteLater()
 
-            items = load_items(self.gebruiker.GetUserId(), item_type='vinyl') + load_items(self.gebruiker.GetUserId(),
-            item_type='game') + load_items(self.gebruiker.GetUserId(),item_type='book')
+            items = (
+                    load_items(self.gebruiker.GetUserId(), item_type='vinyl') +
+                    load_items(self.gebruiker.GetUserId(), item_type='game') +
+                    load_items(self.gebruiker.GetUserId(), item_type='book')
+            )
 
             # Update total items label
             if hasattr(self, 'label_7'):
                 self.label_7.setText(str(len(items)))
 
-                # vò às ge miër às iën wilt dún, perchance
-                self.selected_items = []
+            self.selected_items = []
 
             # Add item cards to grid
             columns = 3
             for i, item in enumerate(items):
                 row = i // columns
                 col = i % columns
-                item_widget = QWidget(item.load(self.grid_layout, row, col))
-                #item.load(self.grid_layout, row, col)
+                item_widget = item.load(self.grid_layout, row, col)
 
-                item_widget.setStyleSheet("border-radius: 5px;")
+                # Ensure widget is linked to its item object
+                item_widget.mousePressEvent = lambda event, w=item_widget, obj=item: self.select_item(w, obj)
 
-                # Voeg mousePressEvent toe aan deze widget
-                item_widget.mousePressEvent = lambda event, widget=item_widget: self.select_item(widget)
-
-                # Voeg de widget toe aan de layout
                 self.grid_layout.addWidget(item_widget, row, col)
 
-            # Add stretch to fill empty space
             self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
             self.grid_layout.setColumnStretch(self.grid_layout.columnCount(), 1)
 
@@ -142,29 +139,63 @@ class MenuWindow(QMainWindow, WindowHelpers):
             col = i % columns
             item.load(self.grid_layout, row, col)
 
-    def select_item(self, item):
-        if item not in self.selected_items:
-            self.selected_items.append(item)
-            item.setStyleSheet("border-radius: 5px; background-color: rgba(51, 153, 204,50);")
+    def select_item(self, item_widget, item_object):
+        if item_object not in self.selected_items:
+            self.selected_items.append(item_object)
+            item_widget.setStyleSheet("border-radius: 5px; background-color: rgba(51, 153, 204,50);")
         else:
-            self.selected_items.remove(item)
-            item.setStyleSheet("border-radius: 5px;")
-        print(f"Selected items: {self.selected_items}")
+            self.selected_items.remove(item_object)
+            item_widget.setStyleSheet("border-radius: 5px;")
+        print(f"Selected items: {[item.id for item in self.selected_items]}")
 
     def create_item_deletion_function(self, item):
         return lambda checked: self.select_item(item)
 
     def delete(self):
         try:
+            if not self.selected_items:
+                print("No items selected for deletion.")
+                return
+
+            conn = connect_db()
+            try:
+                with conn.cursor() as cursor:
+                    for item in self.selected_items:
+                        if hasattr(item, "id") and item.id:  # Ensure item has an ID
+                            if isinstance(item, Vinyl):
+                                table = "vinyls"
+                            elif isinstance(item, Game):
+                                table = "games"
+                            elif isinstance(item, Book):
+                                table = "books"
+                            else:
+                                continue  # Skip if item type is unknown
+
+                            query = f"DELETE FROM {table} WHERE id = %s;"
+                            cursor.execute(query, (item.id,))
+                            conn.commit()
+                            print(f"Deleted {table} item with ID: {item.id}")
+                            self.load_items()
+
+            except Exception as e:
+                print(f"Database error while deleting items: {e}")
+                conn.rollback()
+            finally:
+                conn.close()
+
+            # Remove items from the UI
             for item in self.selected_items:
-                widget = item
-                if widget:
-                    self.grid_layout.removeWidget(widget)
-                    widget.deleteLater()
-                print(f"Deleted item: {item}")
+                for i in range(self.grid_layout.count()):
+                    widget = self.grid_layout.itemAt(i).widget()
+                    if widget and hasattr(widget, "item_id") and widget.item_id == item.id:
+                        self.grid_layout.removeWidget(widget)
+                        widget.deleteLater()
+
             self.selected_items.clear()
 
         except Exception as e:
             print(f"Error deleting items: {e}")
             import traceback
             traceback.print_exc()
+
+

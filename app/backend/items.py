@@ -134,8 +134,10 @@ class Vinyl(Item):
         try:
             vinyl_card = VinylCard(self)
             grid_layout.addWidget(vinyl_card, row, col, Qt.AlignmentFlag.AlignCenter)
+            return vinyl_card
         except Exception as e:
             print(f"Error while loading vinyl: {e}")
+            return None
 
 
 def load_vinyls(user_id):
@@ -203,10 +205,10 @@ class Game(Item):
         try:
             game_card = GameCard(self)
             grid_layout.addWidget(game_card, row, col, Qt.AlignmentFlag.AlignCenter)
+            return game_card
         except Exception as e:
             print(f"Error while loading vinyl: {e}")
-
-
+            return None
 
 class GameCard(QFrame):
     def __init__(self, game, parent=None):
@@ -327,9 +329,10 @@ class Book(Item):
         try:
             book_card = BookCard(self)
             grid_layout.addWidget(book_card, row, col, Qt.AlignmentFlag.AlignCenter)
+            return book_card
         except Exception as e:
             print(f"Error while loading book: {e}")
-
+            return None
 
 class BookCard(QFrame):
     def __init__(self, book, parent=None):
