@@ -1,6 +1,7 @@
 import os
 from PyQt6 import QtCore, uic
-from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QMainWindow, QSystemTrayIcon
 from PyQt6.QtCore import Qt, QPoint
 from app.backend.helpers import WindowHelpers
 from app.frontend.windows.LoginWindow import LoginWindow
@@ -14,6 +15,8 @@ class MainWindow(QMainWindow, WindowHelpers):
         uic.loadUi(os.path.join(BASE_DIR, "../ui/main.ui"), self)
         self.setWindowFlag(QtCore.Qt.WindowType.FramelessWindowHint)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowIcon(QIcon("frontend/test.png"))
+
 
         self.loginButton.clicked.connect(self.clicked)
         self.registerButton.clicked.connect(self.clickedRegi)

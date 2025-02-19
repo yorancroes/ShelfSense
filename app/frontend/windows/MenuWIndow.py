@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, uic
-from PyQt6.QtWidgets import QMainWindow, QGridLayout, QWidget
+from PyQt6.QtWidgets import QMainWindow, QGridLayout, QWidget, QPushButton
 from app.backend.helpers import WindowHelpers
 from app.frontend.windows.AddWindow import AddWindow
 from app.backend.items import load_items
@@ -24,6 +24,7 @@ class MenuWindow(QMainWindow, WindowHelpers):
         self.closeButton.clicked.connect(super().closing)
         self.miniButton.clicked.connect(super().mini)
         self.addButton.clicked.connect(self.add)
+        self.deleteButton.clicked.connect(self.delete)
         self.lpButton.clicked.connect(self.filter_vinyls)
         self.bookButton.clicked.connect(self.filter_books)
         self.gameButton.clicked.connect(self.filter_games)
@@ -64,12 +65,24 @@ class MenuWindow(QMainWindow, WindowHelpers):
             if hasattr(self, 'label_7'):
                 self.label_7.setText(str(len(items)))
 
+                # vò às ge miër às iën wilt dún, perchance
+                self.selected_items = []
+
             # Add item cards to grid
             columns = 3
             for i, item in enumerate(items):
                 row = i // columns
                 col = i % columns
-                item.load(self.grid_layout, row, col)
+                item_widget = QWidget(item.load(self.grid_layout, row, col))
+                #item.load(self.grid_layout, row, col)
+
+                item_widget.setStyleSheet("border-radius: 5px;")
+
+                # Voeg mousePressEvent toe aan deze widget
+                item_widget.mousePressEvent = lambda event, widget=item_widget: self.select_item(widget)
+
+                # Voeg de widget toe aan de layout
+                self.grid_layout.addWidget(item_widget, row, col)
 
             # Add stretch to fill empty space
             self.grid_layout.setRowStretch(self.grid_layout.rowCount(), 1)
@@ -128,3 +141,30 @@ class MenuWindow(QMainWindow, WindowHelpers):
             row = i // columns
             col = i % columns
             item.load(self.grid_layout, row, col)
+
+    def select_item(self, item):
+        if item not in self.selected_items:
+            self.selected_items.append(item)
+            item.setStyleSheet("border-radius: 5px; background-color: rgba(51, 153, 204,50);")
+        else:
+            self.selected_items.remove(item)
+            item.setStyleSheet("border-radius: 5px;")
+        print(f"Selected items: {self.selected_items}")
+
+    def create_item_deletion_function(self, item):
+        return lambda checked: self.select_item(item)
+
+    def delete(self):
+        try:
+            for item in self.selected_items:
+                widget = item
+                if widget:
+                    self.grid_layout.removeWidget(widget)
+                    widget.deleteLater()
+                print(f"Deleted item: {item}")
+            self.selected_items.clear()
+
+        except Exception as e:
+            print(f"Error deleting items: {e}")
+            import traceback
+            traceback.print_exc()
