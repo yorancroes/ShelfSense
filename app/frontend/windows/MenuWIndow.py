@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, uic
-from PyQt6.QtWidgets import QMainWindow, QGridLayout, QWidget, QPushButton
+from PyQt6.QtWidgets import QMainWindow, QGridLayout, QWidget, QPushButton, QLabel
 from app.backend.helpers import WindowHelpers
 from app.frontend.windows.AddWindow import AddWindow
 from app.backend.items import load_items, Vinyl, Game, Book
@@ -142,10 +142,25 @@ class MenuWindow(QMainWindow, WindowHelpers):
     def select_item(self, item_widget, item_object):
         if item_object not in self.selected_items:
             self.selected_items.append(item_object)
-            item_widget.setStyleSheet("border-radius: 5px; background-color: rgba(51, 153, 204,50);")
+            item_widget.setStyleSheet("""
+                background-color: rgba(51, 153, 204, 100);
+                border-radius: 5px;
+            """)
+
+            # Ensure labels remain transparent
+            for child in item_widget.findChildren(QLabel):
+                child.setStyleSheet("background-color: transparent;")
         else:
             self.selected_items.remove(item_object)
-            item_widget.setStyleSheet("border-radius: 5px;")
+            item_widget.setStyleSheet("""
+                background-color: transparent;
+                border-radius: 5px;
+            """)
+
+            # Reset labels
+            for child in item_widget.findChildren(QLabel):
+                child.setStyleSheet("background-color: transparent;")
+
         print(f"Selected items: {[item.id for item in self.selected_items]}")
 
     def create_item_deletion_function(self, item):
